@@ -5,7 +5,8 @@ Utilities to standardise software development in the AI4BMR group.
 
 ```bash
 pip install "git+https://github.com/AI4SCR/ai4bmr-core.git@main#egg=ai4bmr-core"
-#pip install "git+ssh://git@github.com/AI4SCR/ai4bmr-core.git@main#egg=ai4bmr-core"  # for private repos
+# for private repositories
+pip install "git+ssh://git@github.com/AI4SCR/ai4bmr-core.git@main#egg=ai4bmr-core"
 
 # or for development
 pip install -e "git+https://github.com/AI4SCR/ai4bmr-core.git@main#egg=ai4bmr-core[dev]"
