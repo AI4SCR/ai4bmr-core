@@ -6,9 +6,13 @@ from .DatasetConfig import DatasetConfig
 
 
 class BaseDataset(ABC, DatasetConfig):
-    def __init__(self, *, force_download: bool = False, **kwargs):
-        super().__init__(**kwargs)
-        self.force_download = force_download
+    def __init__(
+        self, *, force_download: bool = False, force_caching: bool = False, **kwargs
+    ):
+        super().__init__(
+            force_download=force_download, force_caching=force_caching, **kwargs
+        )
+        # self.force_download = force_download
         if self.force_download and self.raw_dir.exists():
             # NOTE: we delete the `raw_dir` if  `force_download` is True to ensure that all files are newly
             #  downloaded and not just some of them in case of an exception occurs during the download.
@@ -16,15 +20,15 @@ class BaseDataset(ABC, DatasetConfig):
             #  previously attempted downloads were successful.
             shutil.rmtree(self.raw_dir)
 
-        if self.urls and (self.force_download or not self.is_downloaded):
+        if self._urls and (self.force_download or not self.is_downloaded):
             self.download()
 
         if self.is_cached and not self.force_caching:
             logging.info("loading from cache")
-            self.data = self.load_cache()
+            self._data = self.load_cache()
         else:
             logging.info("load")
-            self.data = self.load()
+            self._data = self.load()
             self.save_cache()
 
     @abstractmethod
@@ -44,7 +48,7 @@ class BaseDataset(ABC, DatasetConfig):
     def download(self):
         try:
             self.raw_dir.mkdir(parents=True, exist_ok=True)
-            for file_name, url in self.urls.items():
+            for file_name, url in self._urls.items():
                 if (self.raw_dir / file_name).exists():
                     continue
                 logging.info(f"Downloading from {url} to {self.raw_dir / file_name}")

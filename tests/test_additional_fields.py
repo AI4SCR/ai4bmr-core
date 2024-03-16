@@ -1,5 +1,4 @@
 from ai4bmr_core.datasets.Dataset import BaseDataset
-from pydantic_settings import SettingsConfigDict
 
 
 def test_additional_fields():
@@ -7,7 +6,7 @@ def test_additional_fields():
         # required fields
         _id: str = "Hello"
         _name: str = "World"
-        data: str = "None"
+        _data: str = "None"
 
         # additional fields
         myfield: str
@@ -20,4 +19,4 @@ def test_additional_fields():
 
     d = D(myfield="Hello World")
     assert d.myfield == "Hello World"
-    assert d.data == "Hello World"
+    assert d._data == "Hello World"

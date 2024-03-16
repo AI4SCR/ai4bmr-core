@@ -11,16 +11,19 @@ class DatasetConfig(BaseSettings):
         extra="ignore",
     )
 
-    # required fields
+    # dataset fields, required
     _id: str  # protected, this should not be set by the user
     _name: str  # protected, this should not be set by the user
-    data: None  # note: type defined on the subclass as we don't know it here yet
+    _data: None  # note: type defined on the subclass as we don't know it here yet
 
-    # optional fields
-    description: str = ""
+    # TODO: in theory ALL fields should private, except for the user defined fields
+    # dataset fields, optional
+    _description: str = ""
+    _urls: None | dict[str, str] = None
+
+    # user fields, optional
     # TODO: if data_dir is set, compute ~/.cache/{name}/{raw, processed}_dir
     data_dir: None | Path | str = None
-    urls: None | dict[str, str] = None
     raw_dir: None | Path = None
     processed_dir: None | Path = None
     force_download: bool = False
@@ -29,8 +32,8 @@ class DatasetConfig(BaseSettings):
     @property
     def raw_files(self) -> list[Path]:
         return (
-            [self.raw_dir / i for i in self.urls]
-            if self.raw_dir and self.urls
+            [self.raw_dir / i for i in self._urls]
+            if self.raw_dir and self._urls
             else None
         )
 
