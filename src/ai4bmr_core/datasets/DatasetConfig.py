@@ -6,14 +6,18 @@ from dotenv import find_dotenv
 class DatasetConfig(BaseSettings):
     model_config = SettingsConfigDict(
         env_file=find_dotenv(".env", usecwd=True),
+        # arbitrary_types_allowed=True,
         # protected_namespaces=("settings_",),
         extra="ignore",
     )
 
-    id: str
-    name: str
-    description: str = ""
+    # required fields
+    _id: str  # protected, this should not be set by the user
+    _name: str  # protected, this should not be set by the user
+    data: None  # note: type defined on the subclass as we don't know it here yet
 
+    # optional fields
+    description: str = ""
     # TODO: if data_dir is set, compute ~/.cache/{name}/{raw, processed}_dir
     data_dir: None | Path | str = None
     urls: None | dict[str, str] = None

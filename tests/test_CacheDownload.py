@@ -4,12 +4,14 @@ import pandas as pd
 
 
 class D(BaseDataset):
-    model_config = dict(arbitrary_types_allowed=True)
-    id: str = "Hello"
-    name: str = "World"
+    # required fields
+    # model_config = super().model_config.update(dict(arbitrary_types_allowed=True))
+    _id: str = "Hello"
+    _name: str = "World"
+    data: None | pd.DataFrame = None
+    # optional fields
     raw_dir: Path = Path("~/Downloads/ai4bmr-core/").expanduser()
     processed_dir: Path = Path("~/Downloads/ai4bmr-core/").expanduser()
-    data: pd.DataFrame = None
     urls: dict[str, str] = {
         "download.zip": "https://www.stats.govt.nz/assets/Uploads/Business-employment-data/Business-employment-data-December-2023-quarter/Download-data/business-employment-data-december-2023-quarter.zip"
     }
@@ -30,6 +32,7 @@ class D(BaseDataset):
         self.data.to_csv(self.processed_dir / "data.csv")
 
 
-# %%
-d = D()
-d.data
+def test_download_and_cache():
+    d = D()
+    assert isinstance(d.data, pd.DataFrame)
+    assert d.force_download == False

@@ -43,6 +43,7 @@ class BaseDataset(ABC, DatasetConfig):
 
     def download(self):
         try:
+            self.raw_dir.mkdir(parents=True, exist_ok=True)
             for file_name, url in self.urls.items():
                 if (self.raw_dir / file_name).exists():
                     continue
