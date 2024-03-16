@@ -16,7 +16,7 @@ class BaseDataset(ABC, DatasetConfig):
         raw_dir: Path = None,
         processed_dir: Path = None,
         force_download: bool = False,
-        force_caching: bool = False,
+        force_process: bool = False,
         **kwargs,
     ):
         """
@@ -34,7 +34,7 @@ class BaseDataset(ABC, DatasetConfig):
             raw_dir:
             processed_dir:
             force_download:
-            force_caching:
+            force_process:
             **kwargs:
         """
 
@@ -65,7 +65,7 @@ class BaseDataset(ABC, DatasetConfig):
         super().__init__(
             # we pass these values directly, because they do not need to be post-processed like the other fields
             force_download=force_download,
-            force_caching=force_caching,
+            force_caching=force_process,
             **kwargs,
         )
         # note: after super(), we can access the initialized values and overwrite them if necessary
@@ -96,11 +96,18 @@ class BaseDataset(ABC, DatasetConfig):
         if self._urls and (self.force_download or not self.is_downloaded):
             self.download()
 
-        if self.is_cached and not self.force_caching:
-            logger.info("Cached data found 🥳. Loading data from cache.")
+        if self.is_cached and not self.force_process:
+            logger.info(
+                "Cached data found 🥳. Loading data from cache. To re-process pass `force_process=True`."
+            )
             self._data = self.load_cache()
         else:
-            logger.info("No cached data found 😔. Executing `load` 🏃🏽")
+            if self.is_cached:
+                logger.info(
+                    "Cached data found 🥳 but `force_process=True`. Processing... 🏃🏽"
+                )
+            else:
+                logger.info("No cached data found 😔. Processing... 🏃🏽")
             self._data = self.load()
             self.save_cache(self._data)
 
