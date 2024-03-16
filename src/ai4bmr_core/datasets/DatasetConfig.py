@@ -1,4 +1,5 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic import computed_field
 from pathlib import Path
 from dotenv import find_dotenv
 
@@ -16,18 +17,46 @@ class DatasetConfig(BaseSettings):
     _name: str  # protected, this should not be set by the user
     _data: None  # note: type defined on the subclass as we don't know it here yet
 
-    # TODO: in theory ALL fields should private, except for the user defined fields
     # dataset fields, optional
     _description: str = ""
     _urls: None | dict[str, str] = None
+    _data_dir: None | Path = None
+    _raw_dir: None | Path = None
+    _processed_dir: None | Path = None
 
     # user fields, optional
-    # TODO: if data_dir is set, compute ~/.cache/{name}/{raw, processed}_dir
-    data_dir: None | Path | str = None
-    raw_dir: None | Path = None
-    processed_dir: None | Path = None
     force_download: bool = False
     force_caching: bool = False
+
+    @property
+    def data_dir(self) -> Path:
+        return (
+            Path.home() / ".cache" / "ai4bmr" / "datasets" / self._name
+            if self._data_dir is None
+            else Path(self._data_dir)
+        )
+
+    @data_dir.setter
+    def data_dir(self, value: Path | str):
+        self._data_dir = Path(value) if value else None
+
+    @property
+    def raw_dir(self) -> Path:
+        return self._raw_dir if self._raw_dir else self.data_dir / "raw"
+
+    @raw_dir.setter
+    def raw_dir(self, value: Path | str):
+        self._raw_dir = Path(value) if value else None
+
+    @property
+    def processed_dir(self) -> Path:
+        return (
+            self._processed_dir if self._processed_dir else self.data_dir / "processed"
+        )
+
+    @processed_dir.setter
+    def processed_dir(self, value: Path | str):
+        self._processed_dir = Path(value) if value else None
 
     @property
     def raw_files(self) -> list[Path]:

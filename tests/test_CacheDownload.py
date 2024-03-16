@@ -5,7 +5,6 @@ import pandas as pd
 
 class D(BaseDataset):
     # required fields
-    # model_config = super().model_config.update(dict(arbitrary_types_allowed=True))
     _id: str = "Hello"
     _name: str = "World"
     _data: None | pd.DataFrame = None
@@ -35,4 +34,8 @@ class D(BaseDataset):
 def test_download_and_cache():
     d = D()
     assert isinstance(d._data, pd.DataFrame)
-    assert d.force_download == False
+    assert d._data == "Hello World"
+    assert d.data_dir == Path.home() / ".cache" / "ai4bmr" / "datasets" / "World"
+    assert d.raw_dir == Path("~/Downloads/ai4bmr-core/").expanduser()
+    assert d.processed_dir == Path("~/Downloads/ai4bmr-core/").expanduser()
+    assert d.force_download is False
