@@ -1,4 +1,3 @@
-import logging
 import shutil
 from abc import ABC, abstractmethod
 from pathlib import Path
@@ -87,7 +86,7 @@ class BaseDataset(ABC, DatasetConfig):
         # self.raw_dir = self.raw_dir if self.raw_dir else self.data_dir / "raw"
 
         logger.info(
-            f"Dataset initialized 🎉 \nraw_dir {self.raw_dir}\nprocessed_dir {self.processed_dir}"
+            f"Dataset initialized 🎉 with raw_dir file://{self.raw_dir} and processed_dir file://{self.processed_dir}"
         )
 
         if self.force_download and self.raw_dir.exists():
@@ -163,7 +162,7 @@ class BaseDataset(ABC, DatasetConfig):
                         f"⏭️ Skipping download. 💡For re-download, pass `force_download=True`."
                     )
                     continue
-                logging.info(
+                logger.info(
                     f"💾 Downloading file {file_name} to {self.raw_dir} from {url}"
                 )
                 self._download_progress(url, self.raw_dir / file_name)
