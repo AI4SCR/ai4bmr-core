@@ -25,8 +25,18 @@ classifiers = [
 repository = "https://github.com/AI4SCR/ai4scr-data"
 
 [project.optional-dependencies]
+test = [
+    "pytest",
+    "pytest-cov",
+    "pandas"
+]
 dev = [
-    "pytest", "mypy", "black", "isort", "flake8", "pre-commit", "setuptools_scm[toml]",
+    "mypy",
+    "black",
+    "isort",
+    "flake8",
+    "pre-commit",
+    "setuptools_scm[toml]",
 #    "python-semantic-release",  # rely on setuptools_scm for versioning
 ]
 

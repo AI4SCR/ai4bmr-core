@@ -9,6 +9,8 @@ pip install "git+https://github.com/AI4SCR/ai4bmr-core.git@main#egg=ai4bmr-core"
 pip install "git+ssh://git@github.com/AI4SCR/ai4bmr-core.git@main#egg=ai4bmr-core"
 
 # or for development
-pip install -e "git+https://github.com/AI4SCR/ai4bmr-core.git@main#egg=ai4bmr-core[dev]"
+git clone git+ssh://git@github.com/AI4SCR/ai4bmr-core.git
+cd ai4bmr-core
+pip install -e ".[dev, test]"
 pre-commit install
 ```

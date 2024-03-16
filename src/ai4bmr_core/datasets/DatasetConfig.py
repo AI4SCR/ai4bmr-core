@@ -12,18 +12,22 @@ class DatasetConfig(BaseSettings):
 
     id: str
     name: str
-    description: str = ''
+    description: str = ""
 
     # TODO: if data_dir is set, compute ~/.cache/{name}/{raw, processed}_dir
-    data_dir: Path | str = None
-    urls: dict[str, str] = None
-    raw_dir: Path = None
-    processed_dir: Path = None
+    data_dir: None | Path | str = None
+    urls: None | dict[str, str] = None
+    raw_dir: None | Path = None
+    processed_dir: None | Path = None
     force_download: bool = False
 
     @property
     def raw_files(self) -> list[Path]:
-        return [self.raw_dir / i for i in self.urls] if self.raw_dir and self.urls else None
+        return (
+            [self.raw_dir / i for i in self.urls]
+            if self.raw_dir and self.urls
+            else None
+        )
 
     @property
     def is_downloaded(self) -> bool:
@@ -36,4 +40,8 @@ class DatasetConfig(BaseSettings):
 
     @property
     def is_cached(self) -> bool:
-        return all([i.exists() for i in self.processed_files]) if self.processed_files else False
+        return (
+            all([i.exists() for i in self.processed_files])
+            if self.processed_files
+            else False
+        )
