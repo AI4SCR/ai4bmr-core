@@ -12,6 +12,7 @@ class BaseDataset(ABC, DatasetConfig):
         self,
         *,
         data_dir: None | Path | str = None,
+        dataset_dir: None | Path | str = None,
         raw_dir: Path = None,
         processed_dir: Path = None,
         force_download: bool = False,
@@ -29,6 +30,7 @@ class BaseDataset(ABC, DatasetConfig):
 
         Args:
             data_dir:
+            dataset_dir:
             raw_dir:
             processed_dir:
             force_download:
@@ -73,6 +75,9 @@ class BaseDataset(ABC, DatasetConfig):
         self.data_dir = data_dir if data_dir else self._data_dir
 
         # note: see explanation for `data_dir`
+        self.dataset_dir = dataset_dir if dataset_dir else self._dataset_dir
+
+        # note: see explanation for `data_dir`
         self.processed_dir = processed_dir if processed_dir else self._processed_dir
         # self.processed_dir = self.processed_dir if self.processed_dir else self.data_dir / "processed"
 
@@ -97,7 +102,7 @@ class BaseDataset(ABC, DatasetConfig):
         else:
             logging.info("load")
             self._data = self.load()
-            self.save_cache()
+            self.save_cache(self._data)
 
     @abstractmethod
     def load(self):
@@ -108,7 +113,7 @@ class BaseDataset(ABC, DatasetConfig):
         # files = self.processed_files
         return None
 
-    def save_cache(self) -> None:
+    def save_cache(self, data):
         if self.processed_dir:
             self.processed_dir.mkdir(parents=True, exist_ok=True)
         # add logic to save `processed_files` here
