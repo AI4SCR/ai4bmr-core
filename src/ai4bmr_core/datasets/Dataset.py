@@ -60,6 +60,7 @@ class BaseDataset(ABC, DatasetConfig):
                 processed_dir (\033[92mused\033[0m): {processed_dir}
                 """
             )
+        logger.info("Initializing dataset... 🚀")
 
         # note: we initialize the `BaseDataset` with default values for `raw_dir` and `processed_dir`
         super().__init__(
@@ -84,6 +85,10 @@ class BaseDataset(ABC, DatasetConfig):
         # note: see explanation for `data_dir`
         self.raw_dir = raw_dir if raw_dir else self._raw_dir
         # self.raw_dir = self.raw_dir if self.raw_dir else self.data_dir / "raw"
+
+        logger.info(
+            f"Dataset initialized 🎉 \nraw_dir {self.raw_dir}\nprocessed_dir {self.processed_dir}"
+        )
 
         if self.force_download and self.raw_dir.exists():
             # NOTE: we delete the `raw_dir` if  `force_download` is True to ensure that all files are newly
@@ -155,11 +160,11 @@ class BaseDataset(ABC, DatasetConfig):
                 if (self.raw_dir / file_name).exists():
                     logger.info(
                         f"File {file_name} already exists in {self.raw_dir}. "
-                        f"⏭️Skipping download. 💡For re-download, pass `force_download=True`."
+                        f"⏭️ Skipping download. 💡For re-download, pass `force_download=True`."
                     )
                     continue
                 logging.info(
-                    f"💾Downloading file {file_name} to {self.raw_dir} from {url}"
+                    f"💾 Downloading file {file_name} to {self.raw_dir} from {url}"
                 )
                 self._download_progress(url, self.raw_dir / file_name)
         except Exception as e:
