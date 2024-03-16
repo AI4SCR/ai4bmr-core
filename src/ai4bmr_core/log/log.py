@@ -44,11 +44,9 @@ logger.setLevel(logging.DEBUG)
 # create stream handlers
 console_handler = logging.StreamHandler(sys.stdout)
 console_handler.name = "stdout"
-console_handler.setLevel(logging.DEBUG)  # Adjust as needed
-console_formatter = ColorFormatter("%(name)s - %(levelname)s - %(message)s")
+console_formatter = ColorFormatter("[%(name)s][%(levelname)s] %(message)s")
 console_handler.setFormatter(console_formatter)
 console_handler.setLevel(logging.INFO)
-logger.addHandler(console_handler)
 
 log_id = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 log_filename = f"{log_id}.log"
@@ -65,6 +63,9 @@ file_formatter = logging.Formatter(
     "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 )
 file_handler.setFormatter(file_formatter)
+
+
+logger.addHandler(console_handler)
 logger.addHandler(file_handler)
 
 
