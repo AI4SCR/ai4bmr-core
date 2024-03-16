@@ -6,7 +6,6 @@ from .DatasetConfig import DatasetConfig
 
 
 class BaseDataset(ABC, DatasetConfig):
-
     def __init__(self, force_download: bool = False):
         super().__init__()
         self.force_download = force_download
@@ -21,10 +20,10 @@ class BaseDataset(ABC, DatasetConfig):
             self.download()
 
         if self.is_cached:
-            logging.info('loading from cache')
+            logging.info("loading from cache")
             self.data = self.load_cache()
         else:
-            logging.info('load')
+            logging.info("load")
             self.data = self.load()
             self.save_cache()
 
@@ -34,7 +33,7 @@ class BaseDataset(ABC, DatasetConfig):
 
     def load_cache(self) -> any:
         # NOTE: handle loading of `processed_files` here
-        # return self.processed_files
+        # files = self.processed_files
         return None
 
     def save_cache(self) -> None:
@@ -47,18 +46,20 @@ class BaseDataset(ABC, DatasetConfig):
             for file_name, url in self.urls.items():
                 if (self.raw_dir / file_name).exists():
                     continue
-                logging.info(f'Downloading from {url} to {self.raw_dir / file_name}')
+                logging.info(f"Downloading from {url} to {self.raw_dir / file_name}")
                 self._download_progress(url, self.raw_dir / file_name)
         except Exception as e:
             # if an exception occurs, and the raw_dir is empty, delete it
             # NOTE: there is the case where the raw_dir is not empty, but only some files have been downloaded
             if list(self.raw_dir.iterdir()) == 0:
                 shutil.rmtree(self.raw_dir)
+            raise e
 
     @staticmethod
     def _download_progress(url: str, fpath: Path):
         from tqdm import tqdm
         from urllib.request import urlopen, Request
+
         blocksize = 1024 * 8
         blocknum = 0
 
@@ -66,12 +67,12 @@ class BaseDataset(ABC, DatasetConfig):
             with urlopen(Request(url, headers={"User-agent": "dataset-user"})) as rsp:
                 total = rsp.info().get("content-length", None)
                 with tqdm(
-                        unit="B",
-                        unit_scale=True,
-                        miniters=1,
-                        unit_divisor=1024,
-                        total=total if total is None else int(total)
-                ) as t, fpath.open('wb') as f:
+                    unit="B",
+                    unit_scale=True,
+                    miniters=1,
+                    unit_divisor=1024,
+                    total=total if total is None else int(total),
+                ) as t, fpath.open("wb") as f:
                     block = rsp.read(blocksize)
                     while block:
                         f.write(block)
