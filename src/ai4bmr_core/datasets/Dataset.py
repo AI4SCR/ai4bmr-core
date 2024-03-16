@@ -119,6 +119,27 @@ class BaseDataset(ABC, DatasetConfig):
         # add logic to save `processed_files` here
 
     def download(self):
+        # NOTE: this could be a solution to extract the filename from the download URL as fallback solution
+        # import requests
+        # from urllib.parse import unquote
+        #
+        # url = "https://zenodo.org/records/4607374/files/SingleCell_and_Metadata.zip?download=1"
+        #
+        # response = requests.get(url, stream=True)
+        # # Ensure the request was successful
+        # response.raise_for_status()
+        #
+        # # Try to extract the filename from the Content-Disposition header
+        # content_disposition = response.headers.get('Content-Disposition')
+        # if content_disposition:
+        #     filename = content_disposition.split('filename=')[-1]
+        #     filename = filename.strip('\"\'')  # Remove any enclosing quotes
+        #     filename = unquote(filename)  # Decode URL-encoded characters
+        # else:
+        #     # Fallback to extracting from the URL
+        #     filename = url.split('/')[-1].split('?')[0]  # Basic extraction method
+        #
+        # print(filename)
         try:
             self.raw_dir.mkdir(parents=True, exist_ok=True)
             for file_name, url in self._urls.items():
