@@ -6,8 +6,8 @@ from .DatasetConfig import DatasetConfig
 
 
 class BaseDataset(ABC, DatasetConfig):
-    def __init__(self, force_download: bool = False):
-        super().__init__()
+    def __init__(self, *, force_download: bool = False, **kwargs):
+        super().__init__(**kwargs)
         self.force_download = force_download
         if self.force_download and self.raw_dir.exists():
             # NOTE: we delete the `raw_dir` if  `force_download` is True to ensure that all files are newly
@@ -19,7 +19,7 @@ class BaseDataset(ABC, DatasetConfig):
         if self.urls and (self.force_download or not self.is_downloaded):
             self.download()
 
-        if self.is_cached:
+        if self.is_cached and not self.force_caching:
             logging.info("loading from cache")
             self.data = self.load_cache()
         else:

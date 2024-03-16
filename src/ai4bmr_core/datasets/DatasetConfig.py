@@ -24,6 +24,7 @@ class DatasetConfig(BaseSettings):
     raw_dir: None | Path = None
     processed_dir: None | Path = None
     force_download: bool = False
+    force_caching: bool = False
 
     @property
     def raw_files(self) -> list[Path]:
