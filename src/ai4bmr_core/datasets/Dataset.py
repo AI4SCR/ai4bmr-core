@@ -97,10 +97,10 @@ class BaseDataset(ABC, DatasetConfig):
             self.download()
 
         if self.is_cached and not self.force_caching:
-            logging.info("loading from cache")
+            logger.info("Cached data found 🥳. Loading data from cache.")
             self._data = self.load_cache()
         else:
-            logging.info("load")
+            logger.info("No cached data found 😔. Executing `load` 🏃🏽")
             self._data = self.load()
             self.save_cache(self._data)
 
@@ -144,8 +144,14 @@ class BaseDataset(ABC, DatasetConfig):
             self.raw_dir.mkdir(parents=True, exist_ok=True)
             for file_name, url in self._urls.items():
                 if (self.raw_dir / file_name).exists():
+                    logger.info(
+                        f"File {file_name} already exists in {self.raw_dir}. "
+                        f"⏭️Skipping download. 💡For re-download, pass `force_download=True`."
+                    )
                     continue
-                logging.info(f"Downloading from {url} to {self.raw_dir / file_name}")
+                logging.info(
+                    f"💾Downloading file {file_name} to {self.raw_dir} from {url}"
+                )
                 self._download_progress(url, self.raw_dir / file_name)
         except Exception as e:
             # if an exception occurs, and the raw_dir is empty, delete it
