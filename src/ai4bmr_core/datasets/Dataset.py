@@ -65,7 +65,7 @@ class BaseDataset(ABC, DatasetConfig):
         super().__init__(
             # we pass these values directly, because they do not need to be post-processed like the other fields
             force_download=force_download,
-            force_caching=force_process,
+            force_process=force_process,
             **kwargs,
         )
         # note: after super(), we can access the initialized values and overwrite them if necessary
@@ -85,13 +85,15 @@ class BaseDataset(ABC, DatasetConfig):
         self.raw_dir = raw_dir if raw_dir else self._raw_dir
         # self.raw_dir = self.raw_dir if self.raw_dir else self.data_dir / "raw"
 
-        # self.force_download = force_download
         if self.force_download and self.raw_dir.exists():
             # NOTE: we delete the `raw_dir` if  `force_download` is True to ensure that all files are newly
             #  downloaded and not just some of them in case of an exception occurs during the download.
             #  Furthermore, we check if the folder exists and do not use `is_downloaded` as this is only True if the
             #  previously attempted downloads were successful.
             shutil.rmtree(self.raw_dir)
+
+        if self.force_process and self.processed_dir.exists():
+            shutil.rmtree(self.processed_dir)
 
         if self._urls and (self.force_download or not self.is_downloaded):
             self.download()

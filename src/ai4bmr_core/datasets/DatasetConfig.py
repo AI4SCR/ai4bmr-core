@@ -8,6 +8,7 @@ from pydantic import computed_field
 class DatasetConfig(BaseSettings):
     model_config = SettingsConfigDict(
         env_file=find_dotenv(".env", usecwd=True),
+        env_prefix="AI4BMR_",
         # arbitrary_types_allowed=True,
         # protected_namespaces=("settings_",),
         extra="ignore",
@@ -21,23 +22,27 @@ class DatasetConfig(BaseSettings):
     # dataset fields, optional
     _description: str = ""
     _urls: None | dict[str, str] = None
+    # note: the `data_dir` is resolved by self._data_dir ➡️ self.cache_dir ➡️ Path.home() / ".cache" / "ai4bmr"
     _data_dir: None | Path = None
+    cache_dir: None | Path = None  # enable .env configuration viw AI4BMR_CACHE_DIR
+
     _dataset_dir: None | Path = None
     _raw_dir: None | Path = None
     _processed_dir: None | Path = None
 
     # user fields, optional
     force_download: bool = False
-    force_caching: bool = False
+    force_process: bool = False
 
     @computed_field
     @property
     def data_dir(self) -> Path:
-        return (
-            Path.home() / ".cache" / "ai4bmr"
-            if self._data_dir is None
-            else Path(self._data_dir)
-        )
+        if self._data_dir:
+            return Path(self._data_dir)
+        elif self.cache_dir:
+            return Path(self.cache_dir)
+        else:
+            return Path.home() / ".cache" / "ai4bmr"
 
     @data_dir.setter
     def data_dir(self, value: Path | str):

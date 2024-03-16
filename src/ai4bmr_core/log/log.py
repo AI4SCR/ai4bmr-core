@@ -47,6 +47,7 @@ console_handler.name = "stdout"
 console_handler.setLevel(logging.DEBUG)  # Adjust as needed
 console_formatter = ColorFormatter("%(name)s - %(levelname)s - %(message)s")
 console_handler.setFormatter(console_formatter)
+console_handler.setLevel(logging.INFO)
 logger.addHandler(console_handler)
 
 log_id = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
