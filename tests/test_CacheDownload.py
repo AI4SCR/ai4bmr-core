@@ -9,8 +9,8 @@ class D(BaseDataset):
     _name: str = "World"
     _data: None | pd.DataFrame = None
     # optional fields
-    raw_dir: Path = Path("~/Downloads/ai4bmr-core/").expanduser()
-    processed_dir: Path = Path("~/Downloads/ai4bmr-core/").expanduser()
+    _raw_dir: Path = Path("~/Downloads/ai4bmr-core/").expanduser()
+    _processed_dir: Path = Path("~/Downloads/ai4bmr-core/").expanduser()
     _urls: dict[str, str] = {
         "download.zip": "https://www.stats.govt.nz/assets/Uploads/Business-employment-data/Business-employment-data-December-2023-quarter/Download-data/business-employment-data-december-2023-quarter.zip"
     }
@@ -28,13 +28,12 @@ class D(BaseDataset):
 
     def save_cache(self):
         self.processed_dir.mkdir(parents=True, exist_ok=True)
-        self.data.to_csv(self.processed_dir / "data.csv")
+        self._data.to_csv(self.processed_dir / "data.csv")
 
 
 def test_download_and_cache():
     d = D()
     assert isinstance(d._data, pd.DataFrame)
-    assert d._data == "Hello World"
     assert d.data_dir == Path.home() / ".cache" / "ai4bmr" / "datasets" / "World"
     assert d.raw_dir == Path("~/Downloads/ai4bmr-core/").expanduser()
     assert d.processed_dir == Path("~/Downloads/ai4bmr-core/").expanduser()

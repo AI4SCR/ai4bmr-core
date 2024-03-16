@@ -32,7 +32,6 @@ def test_pandas():
 
     d = D()
     assert (d._data == pd.DataFrame()).all().all()
-    assert d._data == "Hello World"
     assert d.data_dir == Path.home() / ".cache" / "ai4bmr" / "datasets" / "World"
     assert d.raw_dir == d.data_dir / "raw"
     assert d.processed_dir == d.data_dir / "processed"
@@ -58,7 +57,6 @@ def test_custom_dtype():
 
     d = D()
     assert d._data == CustomType()
-    assert d._data == "Hello World"
     assert d.data_dir == Path.home() / ".cache" / "ai4bmr" / "datasets" / "World"
     assert d.raw_dir == d.data_dir / "raw"
     assert d.processed_dir == d.data_dir / "processed"

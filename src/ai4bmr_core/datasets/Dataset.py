@@ -36,7 +36,12 @@ class BaseDataset(ABC, DatasetConfig):
             **kwargs:
         """
 
-        if data_dir is None and raw_dir.parent != processed_dir.parent:
+        if (
+            data_dir is None
+            and raw_dir is not None
+            and processed_dir is not None
+            and raw_dir.parent != processed_dir.parent
+        ):
             logger.warning(
                 f"""
                 Divergent path configuration. You are saving data in different directories.
