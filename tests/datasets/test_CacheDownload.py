@@ -36,8 +36,6 @@ def test_download_and_cache():
 
         d = D()
         assert isinstance(d._data, pd.DataFrame)
-        assert d.data_dir == Path(tmpdir)
-        assert d.dataset_dir == Path(tmpdir) / "datasets" / "World"
-        assert d.raw_dir == d.dataset_dir / "01_raw"
-        assert d.processed_dir == d.dataset_dir / "02_processed"
+        assert d.base_dir == Path(tmpdir)
+        assert d.processed_dir == d.base_dir / "02_processed"
         assert d.force_download is False

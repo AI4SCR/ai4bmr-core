@@ -8,33 +8,15 @@ def test_class_define_data_dir():
         _id: str = "Hello"
         _name: str = "World"
         _data: str = ""
-        _data_dir = Path("~/Downloads/ai4bmr-core/").expanduser()
+        _base_dir = Path("~/Downloads/ai4bmr-core/").expanduser()
 
         def load(self):
             return "Hello World"
 
     d = D()
-    assert d.data_dir == Path("~/Downloads/ai4bmr-core/").expanduser()
-    assert d.dataset_dir == d.data_dir / "datasets" / "World"
-    assert d.raw_dir == d.data_dir / "01_raw"
-    assert d.processed_dir == d.data_dir / "02_processed"
-
-
-def test_class_define_dataset_dir():
-    class D(BaseDataset):
-        _id: str = "Hello"
-        _name: str = "World"
-        _data: str = ""
-        _dataset_dir = Path("~/Downloads/ai4bmr-core/").expanduser()
-
-        def load(self):
-            return "Hello World"
-
-    d = D()
-    assert d.data_dir == Path("~/Downloads/ai4bmr-core/").expanduser()
-    assert d.dataset_dir == d.data_dir / "datasets" / "World"
-    assert d.raw_dir == d.data_dir / "01_raw"
-    assert d.processed_dir == d.data_dir / "02_processed"
+    assert d.base_dir == Path("~/Downloads/ai4bmr-core/").expanduser()
+    assert d.raw_dir == d.base_dir / "01_raw"
+    assert d.processed_dir == d.base_dir / "02_processed"
 
 
 def test_class_raw_and_processed():
@@ -49,7 +31,7 @@ def test_class_raw_and_processed():
             return "Hello World"
 
     d = D()
-    assert d.data_dir == Path.home() / ".cache" / "ai4bmr"
+    assert d.base_dir == Path.home() / ".cache" / "ai4bmr" / "World"
     assert d.raw_dir == Path("~/Downloads/ai4bmr-core/raw").expanduser()
     assert d.processed_dir == Path("~/Downloads/ai4bmr-core/process").expanduser()
 
@@ -59,7 +41,7 @@ def test_class_data_raw_and_processed():
         _id: str = "Hello"
         _name: str = "World"
         _data: str = ""
-        _data_dir = Path("~/Downloads/ai4bmr-core/").expanduser()
+        _base_dir = Path("~/Downloads/ai4bmr-core/").expanduser()
         _raw_dir: Path = Path("~/Downloads/ai4bmr-core/raw").expanduser()
         _processed_dir: Path = Path("~/Downloads/ai4bmr-core/process").expanduser()
 
@@ -67,6 +49,6 @@ def test_class_data_raw_and_processed():
             return "Hello World"
 
     d = D()
-    assert d.data_dir == Path("~/Downloads/ai4bmr-core/").expanduser()
+    assert d.base_dir == Path("~/Downloads/ai4bmr-core/").expanduser()
     assert d.raw_dir == Path("~/Downloads/ai4bmr-core/raw").expanduser()
     assert d.processed_dir == Path("~/Downloads/ai4bmr-core/process").expanduser()
