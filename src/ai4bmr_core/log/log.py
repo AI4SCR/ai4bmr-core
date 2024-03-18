@@ -1,3 +1,6 @@
+# TODO: provide Factory to produce subclassed loggers
+
+
 import functools
 import logging
 import sys

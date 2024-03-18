@@ -2,7 +2,7 @@ import shutil
 from abc import ABC, abstractmethod
 from pathlib import Path
 
-from .DatasetConfig import DatasetConfig
+from ai4bmr_core.data_models.Dataset import Dataset as DatasetConfig
 from ..log.log import logger
 
 
@@ -10,8 +10,7 @@ class BaseDataset(ABC, DatasetConfig):
     def __init__(
         self,
         *,
-        data_dir: None | Path | str = None,
-        dataset_dir: None | Path | str = None,
+        base_dir: None | Path | str = None,
         raw_dir: Path = None,
         processed_dir: Path = None,
         force_download: bool = False,
@@ -38,7 +37,7 @@ class BaseDataset(ABC, DatasetConfig):
         """
 
         if (
-            data_dir is None
+            base_dir is None
             and raw_dir is not None
             and processed_dir is not None
             and raw_dir.parent != processed_dir.parent
@@ -50,11 +49,11 @@ class BaseDataset(ABC, DatasetConfig):
                 processed_dir: {processed_dir}
                 """
             )
-        if data_dir is not None and (raw_dir is not None or processed_dir is not None):
+        if base_dir is not None and (raw_dir is not None or processed_dir is not None):
             logger.warning(
                 f"""
                 Paths are over-configured. You are setting `data_dir` and `raw_dir` or `processed_dir` at the same time.
-                data_dir (\033[93mignored\033[0m): {data_dir}
+                data_dir (\033[93mignored\033[0m): {base_dir}
                 raw_dir (\033[92mused\033[0m): {raw_dir}
                 processed_dir (\033[92mused\033[0m): {processed_dir}
                 """
@@ -72,10 +71,10 @@ class BaseDataset(ABC, DatasetConfig):
 
         # note: if the user defines a data_dir use it. If not, use the default value defined on the subclass.
         #   If the subclass does not define a default value, use the default value defined on the DatasetConfig class.
-        self.data_dir = data_dir if data_dir else self._data_dir
+        self.base_dir = base_dir if base_dir else self._base_dir
 
         # note: see explanation for `data_dir`
-        self.dataset_dir = dataset_dir if dataset_dir else self._dataset_dir
+        # self.dataset_dir = dataset_dir if dataset_dir else self._dataset_dir
 
         # note: see explanation for `data_dir`
         self.processed_dir = processed_dir if processed_dir else self._processed_dir
