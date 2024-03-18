@@ -2,7 +2,19 @@ import pickle
 from pathlib import Path
 
 
-class ModelIOMixIn:
+class CreateFolderHierarchyMixin:
+    def create_folder_hierarchy(self):
+        dirs = self.get_dirs()
+        for d in dirs:
+            path = getattr(self, d)
+            path.mkdir(parents=True, exist_ok=True)
+
+    @classmethod
+    def get_dirs(cls):
+        return [i for i in cls.__dict__["model_computed_fields"] if i.endswith("_dir")]
+
+
+class JSONMixIn:
     @classmethod
     def model_validate_from_file(cls, path):
         import json
@@ -16,7 +28,7 @@ class ModelIOMixIn:
             f.write(self.model_dump_json())
 
 
-class FromYamlMixIn:
+class YAMLMixIN:
     # TODO: add typing
     @classmethod
     def from_yaml(cls, path, **kwargs):

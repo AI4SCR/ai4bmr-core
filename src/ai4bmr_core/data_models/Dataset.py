@@ -5,10 +5,10 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 from pydantic import computed_field
 
 
-class DatasetConfig(BaseSettings):
+class Dataset(BaseSettings):
     model_config = SettingsConfigDict(
         env_file=find_dotenv(".env", usecwd=True),
-        env_prefix="AI4BMR_",
+        env_prefix="AI4BMR_DATASET_",
         # arbitrary_types_allowed=True,
         # protected_namespaces=("settings_",),
         extra="ignore",
@@ -22,11 +22,11 @@ class DatasetConfig(BaseSettings):
     # dataset fields, optional
     _description: str = ""
     _urls: None | dict[str, str] = None
-    # note: the `data_dir` is resolved by self._data_dir ➡️ self.cache_dir ➡️ Path.home() / ".cache" / "ai4bmr"
-    _data_dir: None | Path = None
-    cache_dir: None | Path = None  # enable .env configuration viw AI4BMR_CACHE_DIR
 
-    _dataset_dir: None | Path = None
+    # note: the `dir` is resolved by self._base_dir ➡️ self.cache_dir ➡️ Path.home() / ".cache" / "ai4bmr"
+    # dir: None | Path = None
+    _base_dir: None | Path = None
+    cache_dir: None | Path = None
     _raw_dir: None | Path = None
     _processed_dir: None | Path = None
 
@@ -36,35 +36,22 @@ class DatasetConfig(BaseSettings):
 
     @computed_field
     @property
-    def data_dir(self) -> Path:
-        if self._data_dir:
-            return Path(self._data_dir)
+    def base_dir(self) -> Path:
+        if self._base_dir:
+            return Path(self._base_dir)
         elif self.cache_dir:
-            return Path(self.cache_dir)
+            return Path(self.cache_dir) / self._name
         else:
-            return Path.home() / ".cache" / "ai4bmr"
+            return Path.home() / ".cache" / "ai4bmr" / self._name
 
-    @data_dir.setter
-    def data_dir(self, value: Path | str):
-        self._data_dir = Path(value) if value else None
-
-    @computed_field
-    @property
-    def dataset_dir(self) -> Path:
-        return (
-            self._dataset_dir
-            if self._dataset_dir
-            else self.data_dir / "datasets" / self._name
-        )
-
-    @dataset_dir.setter
-    def dataset_dir(self, value: Path | str):
-        self._dataset_dir = Path(value) if value else None
+    @base_dir.setter
+    def base_dir(self, value: Path | str):
+        self._base_dir = Path(value) if value else None
 
     @computed_field
     @property
     def raw_dir(self) -> Path:
-        return self._raw_dir if self._raw_dir else self.dataset_dir / "01_raw"
+        return self._raw_dir if self._raw_dir else self.base_dir / "01_raw"
 
     @raw_dir.setter
     def raw_dir(self, value: Path | str):
@@ -76,7 +63,7 @@ class DatasetConfig(BaseSettings):
         return (
             self._processed_dir
             if self._processed_dir
-            else self.dataset_dir / "02_processed"
+            else self.base_dir / "02_processed"
         )
 
     @processed_dir.setter
@@ -86,6 +73,9 @@ class DatasetConfig(BaseSettings):
     @computed_field
     @property
     def raw_files(self) -> list[Path]:
+        # TODO: this should not depend on the `self._urls` field but on a own attribute `self._raw_files`
+        #   otherwise, we would always need to define the `download` method on the Dataset class as setting `_url`
+        #   triggers download.
         return (
             [self.raw_dir / i for i in self._urls]
             if self.raw_dir and self._urls
@@ -95,12 +85,13 @@ class DatasetConfig(BaseSettings):
     @computed_field
     @property
     def is_downloaded(self) -> bool:
+        # TODO: check `raw_files` todo.
         return all([i.exists() for i in self.raw_files]) if self.raw_files else False
 
     @computed_field
     @property
     def processed_files(self) -> list[Path]:
-        # define a list of files that are produced by self.
+        # define a list of files that are produced by self.load of the dataset class
         return []
 
     @computed_field
