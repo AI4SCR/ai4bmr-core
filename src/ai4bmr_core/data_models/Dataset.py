@@ -1,11 +1,13 @@
 from pathlib import Path
 
 from dotenv import find_dotenv
-from pydantic_settings import BaseSettings, SettingsConfigDict
 from pydantic import computed_field
+from pydantic_settings import BaseSettings, SettingsConfigDict
+
+from . import MixIns
 
 
-class Dataset(BaseSettings):
+class Dataset(BaseSettings, MixIns.CreateFolderHierarchy):
     model_config = SettingsConfigDict(
         env_file=find_dotenv(".env", usecwd=True),
         env_prefix="AI4BMR_DATASET_",
@@ -42,7 +44,7 @@ class Dataset(BaseSettings):
         elif self.cache_dir:
             return Path(self.cache_dir) / self._name
         else:
-            return Path.home() / ".cache" / "ai4bmr" / self._name
+            return Path.home() / ".cache" / "ai4bmr" / "datasets" / self._name
 
     @base_dir.setter
     def base_dir(self, value: Path | str):

@@ -4,11 +4,11 @@ from dotenv import find_dotenv
 from pydantic import computed_field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-from .MixIns import CreateFolderHierarchyMixin
+from .MixIns import CreateFolderHierarchy
 from .Project import Project
 
 
-class Experiment(BaseSettings, CreateFolderHierarchyMixin):
+class Experiment(BaseSettings, CreateFolderHierarchy):
     model_config = SettingsConfigDict(
         env_file=find_dotenv(".env", usecwd=True),
         env_prefix="AI4BMR_EXPERIMENT_",

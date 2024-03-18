@@ -4,10 +4,10 @@ from dotenv import find_dotenv
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from pydantic import computed_field
 
-from .MixIns import CreateFolderHierarchyMixin
+from .MixIns import CreateFolderHierarchy
 
 
-class Project(BaseSettings, CreateFolderHierarchyMixin):
+class Project(BaseSettings, CreateFolderHierarchy):
     model_config = SettingsConfigDict(
         env_file=find_dotenv(".env", usecwd=True),
         env_prefix="AI4BMR_PROJECT_",

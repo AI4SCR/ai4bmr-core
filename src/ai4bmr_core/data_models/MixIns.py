@@ -2,7 +2,7 @@ import pickle
 from pathlib import Path
 
 
-class CreateFolderHierarchyMixin:
+class CreateFolderHierarchy:
     def create_folder_hierarchy(self):
         dirs = self.get_dirs()
         for d in dirs:
@@ -14,34 +14,24 @@ class CreateFolderHierarchyMixin:
         return [i for i in cls.__dict__["model_computed_fields"] if i.endswith("_dir")]
 
 
-class JSONMixIn:
+class JsonIO:
     @classmethod
-    def model_validate_from_file(cls, path):
+    def model_validate_from_json(cls, path):
         import json
 
         with open(path, "r") as f:
             data = json.load(f)
         return cls.model_validate(data)
 
-    def model_dump_to_file(self, path: Path | str):
+    def model_dump_to_json(self, path: Path | str):
         with open(path, "w") as f:
             f.write(self.model_dump_json())
 
 
-class YAMLMixIN:
+class YamlIO:
     # TODO: add typing
     @classmethod
-    def from_yaml(cls, path, **kwargs):
-        """Load data model from a yaml file. If the file contains a list of items, a list of data models is returned.
-
-        Args:
-            path: path to the yaml file
-            **kwargs: arguments that override the values loaded from the yaml file. Useful for values that are only
-                known at runtime. This allows to define the value in the yaml file as null and override it at runtime.
-
-        Returns:
-            cls instance or list of cls instances
-        """
+    def model_validate_from_yaml(cls, path, **kwargs):
         import yaml
 
         with open(path) as f:
@@ -51,8 +41,15 @@ class YAMLMixIN:
             else:
                 return cls(**{**items, **kwargs})
 
+    def model_dump_to_yaml(self, path: Path | str):
+        import yaml
 
-class PickleMixIn:
+        model_dict = self.dict()
+        with open(path, "w") as file:
+            yaml.dump(model_dict, file, sort_keys=True)
+
+
+class PickleIO:
     def to_pickle(
         self, path: Path | str, exists: str = "skip", check_integrity: bool = True
     ):
