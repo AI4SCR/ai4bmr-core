@@ -70,11 +70,21 @@ class Experiment(BaseSettings, CreateFolderHierarchy):
         return self.models_dir / model_name
 
     def get_prediction_path(
-        self, dataset_name: str, model_name: str, sample_name: str
+        self,
+        dataset_name: str,
+        model_name: str,
+        sample_name: str,
+        suffix: str = ".json",
     ) -> Path:
-        return self.predictions_dir / dataset_name / model_name / sample_name
+        return (
+            self.predictions_dir / dataset_name / model_name / f"{sample_name}{suffix}"
+        )
 
     def get_result_path(
-        self, dataset_name: str, model_name: str, sample_name: str
+        self,
+        dataset_name: str,
+        model_name: str,
+        sample_name: str,
+        suffix: str = ".json",
     ) -> Path:
-        return self.result_dir / model_name / dataset_name / sample_name
+        return self.result_dir / model_name / dataset_name / f"{sample_name}{suffix}"
