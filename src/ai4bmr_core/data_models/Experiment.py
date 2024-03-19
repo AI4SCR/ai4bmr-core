@@ -72,7 +72,7 @@ class Experiment(BaseSettings, CreateFolderHierarchy):
     def get_prediction_path(
         self, dataset_name: str, model_name: str, sample_name: str
     ) -> Path:
-        return self.prediction_dir / dataset_name / model_name / sample_name
+        return self.predictions_dir / dataset_name / model_name / sample_name
 
     def get_result_path(
         self, dataset_name: str, model_name: str, sample_name: str
