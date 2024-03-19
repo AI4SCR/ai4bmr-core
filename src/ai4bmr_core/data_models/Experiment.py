@@ -64,7 +64,7 @@ class Experiment(BaseSettings, CreateFolderHierarchy):
     def get_sample_path(
         self, stage: str, sample_name: str, suffix: str = ".json"
     ) -> Path:
-        return self._experiment_samples_dir / stage / f"{sample_name}{suffix}"
+        return self.samples_dir / stage / f"{sample_name}{suffix}"
 
     def get_model_dir(self, model_name: str) -> Path:
         return self.models_dir / model_name
