@@ -51,7 +51,7 @@ class YamlIO:
 
 class PickleIO:
     def to_pickle(
-        self, path: Path | str, exists: str = "skip", check_integrity: bool = True
+        self, path: Path | str, exists: str = "raise", check_integrity: bool = True
     ):
         if check_integrity and hasattr(self, "check_integrity"):
             assert self.check_integrity()
