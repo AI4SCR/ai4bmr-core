@@ -1,21 +1,24 @@
 from pathlib import Path
 
-from dotenv import find_dotenv
+from pydantic import computed_field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
-from pydantic import computed_field
 
 from .MixIns import CreateFolderHierarchy
 
 
 class Project(BaseSettings, CreateFolderHierarchy):
     model_config = SettingsConfigDict(
-        env_file=find_dotenv(".env", usecwd=True),
         env_prefix="AI4BMR_PROJECT_",
         extra="ignore",
     )
 
     base_dir: Path
-    name: str
+    name: str = None
+
+    @field_validator("base_dir")
+    @classmethod
+    def expand_base_dir(cls, value) -> Path:
+        return Path(value).expanduser()
 
     @computed_field
     @property
