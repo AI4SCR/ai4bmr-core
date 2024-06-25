@@ -1,5 +1,5 @@
 from pathlib import Path
-
+from dotenv import find_dotenv
 from pydantic import computed_field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -8,6 +8,7 @@ from .MixIns import CreateFolderHierarchy
 
 class Project(BaseSettings, CreateFolderHierarchy):
     model_config = SettingsConfigDict(
+        env_file=find_dotenv(".env", usecwd=True) or find_dotenv(".env"),
         env_prefix="AI4BMR_PROJECT_",
         extra="ignore",
     )
