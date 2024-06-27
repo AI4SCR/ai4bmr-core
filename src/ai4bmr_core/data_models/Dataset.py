@@ -8,14 +8,6 @@ from . import MixIns
 
 
 class Dataset(BaseSettings, MixIns.CreateFolderHierarchy):
-    model_config = SettingsConfigDict(
-        env_file=find_dotenv(".env", usecwd=True),
-        env_prefix="AI4BMR_DATASET_",
-        # arbitrary_types_allowed=True,
-        # protected_namespaces=("settings_",),
-        extra="ignore",
-    )
-
     # dataset fields, required
     _id: str  # protected, this should not be set by the user
     _name: str  # protected, this should not be set by the user

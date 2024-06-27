@@ -34,7 +34,7 @@ def test_raw_processed_paths():
         raw_dir=Path("~/Downloads/random_path/raw").expanduser(),
         processed_dir=Path("~/processed").expanduser(),
     )
-    assert d.base_dir == Path.home() / ".cache" / "ai4bmr" / "World"
+    assert d.base_dir == Path.home() / ".cache" / "ai4bmr" / "datasets" / "World"
     assert d.raw_dir == Path("~/Downloads/random_path/raw").expanduser()
     assert d.processed_dir == Path("~/processed").expanduser()
 

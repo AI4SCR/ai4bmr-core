@@ -85,7 +85,7 @@ class BaseDataset(ABC, DatasetConfig):
         # self.raw_dir = self.raw_dir if self.raw_dir else self.data_dir / "raw"
 
         logger.info(
-            f"Dataset initialized 🎉 with raw_dir file://{self.raw_dir} and processed_dir file://{self.processed_dir}"
+            f"Dataset initialized 🎉 with \n\traw_dir file://{self.raw_dir}\n\tprocessed_dir file://{self.processed_dir}"
         )
 
         if self.force_download and self.raw_dir.exists():

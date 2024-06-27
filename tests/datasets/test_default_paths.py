@@ -12,7 +12,7 @@ def test_default_paths():
             return "Hello World"
 
     d = D()
-    assert d.base_dir == Path.home() / ".cache" / "ai4bmr" / "World"
+    assert d.base_dir == Path.home() / ".cache" / "ai4bmr" / "datasets" / "World"
     assert d.raw_dir == d.base_dir / "01_raw"
     assert d.processed_dir == d.base_dir / "02_processed"
     assert d.force_download is False

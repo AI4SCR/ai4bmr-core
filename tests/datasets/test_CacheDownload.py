@@ -14,7 +14,6 @@ def test_download_and_cache():
             _name: str = "World"
             _data: None | pd.DataFrame = None
             # optional fields
-            _data_dir = Path(tmpdir)
             _urls: dict[str, str] = {
                 "download.zip": "https://www.stats.govt.nz/assets/Uploads/Business-employment-data/Business-employment-data-December-2023-quarter/Download-data/business-employment-data-december-2023-quarter.zip"
             }
@@ -34,7 +33,7 @@ def test_download_and_cache():
                 self.processed_dir.mkdir(parents=True, exist_ok=True)
                 data.to_csv(self.processed_files[0])
 
-        d = D()
+        d = D(base_dir=Path(tmpdir))
         assert isinstance(d._data, pd.DataFrame)
         assert d.base_dir == Path(tmpdir)
         assert d.processed_dir == d.base_dir / "02_processed"

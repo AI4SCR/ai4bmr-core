@@ -31,7 +31,7 @@ def test_class_raw_and_processed():
             return "Hello World"
 
     d = D()
-    assert d.base_dir == Path.home() / ".cache" / "ai4bmr" / "World"
+    assert d.base_dir == Path.home() / ".cache" / "ai4bmr" / "datasets" / "World"
     assert d.raw_dir == Path("~/Downloads/ai4bmr-core/raw").expanduser()
     assert d.processed_dir == Path("~/Downloads/ai4bmr-core/process").expanduser()
 
