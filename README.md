@@ -14,3 +14,6 @@ cd ai4bmr-core
 pip install -e ".[dev, test]"
 pre-commit install
 ```
+
+# ToDo
+- Where should we keep the graph builder? It adds the whole scikit-learn as a dependency and it does not feel like the right place here

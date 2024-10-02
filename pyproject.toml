@@ -16,7 +16,8 @@ dependencies = [
     "pydantic",
     "pydantic-settings",
     "tqdm",
-    "networkx"
+    "networkx",
+    "scikit-learn"
 ]
 dynamic = ["version"]
 classifiers = [
