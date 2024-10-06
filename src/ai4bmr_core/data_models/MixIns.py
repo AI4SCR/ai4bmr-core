@@ -30,6 +30,7 @@ class JsonIO:
 
 class YamlIO:
     # TODO: add typing
+    # NOTE: why do we support overriding fields with kwargs?
     @classmethod
     def model_validate_from_yaml(cls, path, **kwargs):
         import yaml
@@ -54,6 +55,7 @@ class PickleIO:
         self, path: Path | str, exists: str = "raise", check_integrity: bool = True
     ):
         if check_integrity and hasattr(self, "check_integrity"):
+            # TODO: raise error if `check_integrity = True` but method does not exist
             assert self.check_integrity()
 
         if Path(path).exists():
