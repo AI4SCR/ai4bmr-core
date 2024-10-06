@@ -3,7 +3,8 @@ import re
 
 def tidy_names(name: str) -> str:
     """
-    Tidy a string to make it a valid name for a variable, function, or class in Python.
+    Tidy a string by removing whitespace, special characters, and converting to lowercase.
+
     Args:
         name: string to tidy
 
