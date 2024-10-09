@@ -17,6 +17,9 @@ def sample_min_per_group_then_uniform(
     Returns:
         sub-sampled dataframe with approx. n samples
     """
+    if n < grouped.size().sum():
+        return grouped.obj
+
     if min_per_group is None:
         min_per_group = n // grouped.ngroups
     else:
