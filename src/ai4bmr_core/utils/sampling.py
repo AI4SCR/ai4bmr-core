@@ -17,7 +17,7 @@ def sample_min_per_group_then_uniform(
     Returns:
         sub-sampled dataframe with approx. n samples
     """
-    if n < grouped.size().sum():
+    if n > grouped.size().sum():
         return grouped.obj
 
     if min_per_group is None:
@@ -27,21 +27,29 @@ def sample_min_per_group_then_uniform(
 
     # compute number of samples per group
     a = grouped.size()[min_per_group - grouped.size() >= 0]
+    # from the groups with larger size we sample the minimum number
+    b = pd.Series(min_per_group, index=grouped.size()[min_per_group - grouped.size() < 0].index)
+    # compute the remaining number of samples we can sample
+    remaining = n - (a.sum() + b.sum())
     # groups with more samples than min_per_group
-    b = grouped.size()[min_per_group - grouped.size() < 0]
+    c = grouped.size()[min_per_group - grouped.size() < 0]
     # from these groups we sample according to their proportion
-    b = (n - a.sum()) * b / b.sum()
-    b = b.astype(int)
-    c = pd.concat((a, b))
+    c = remaining * c / c.sum()
+    c = c.astype(int)
+    # combine the min_per_group and the uniform sample size for groups that have more the min_per_group samples
+    c = c + b
+    assert (c >= min_per_group).all()
+
+    d = pd.concat((a, c))
+    assert len(d) == grouped.ngroups
+    assert d.index.duplicated().any() == False
 
     sampled = pd.DataFrame()
     for grp_name, num_samples in c.items():
         sampled = pd.concat(
             (
                 sampled,
-                grouped.get_group(grp_name).sample(
-                    num_samples, random_state=random_state
-                ),
+                grouped.get_group(grp_name).sample(num_samples, random_state=random_state),
             )
         )
 
