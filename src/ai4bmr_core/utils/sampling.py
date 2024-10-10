@@ -51,7 +51,7 @@ def sample_min_per_group_then_uniform(
     assert d.sum() <= n
 
     sampled = pd.DataFrame()
-    for grp_name, num_samples in c.items():
+    for grp_name, num_samples in d.items():
         sampled = pd.concat(
             (
                 sampled,
