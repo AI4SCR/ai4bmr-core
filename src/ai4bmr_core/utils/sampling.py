@@ -33,6 +33,8 @@ def sample_min_per_group_then_uniform(
     remaining = n - (a.sum() + b.sum())
     # groups with more samples than min_per_group
     c = grouped.size()[min_per_group - grouped.size() < 0]
+    c = c - b
+
     # from these groups we sample according to their proportion
     c = remaining * c / c.sum()
     c = c.astype(int)
@@ -43,6 +45,10 @@ def sample_min_per_group_then_uniform(
     d = pd.concat((a, c))
     assert len(d) == grouped.ngroups
     assert d.index.duplicated().any() == False
+    # note: check that the sample size per group is not larget than the group
+    s, d = grouped.size().align(d)
+    assert (s >= d).all()
+    assert d.sum() <= n
 
     sampled = pd.DataFrame()
     for grp_name, num_samples in c.items():
