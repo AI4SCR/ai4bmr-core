@@ -33,6 +33,9 @@ classifiers = [
 repository = "https://github.com/AI4SCR/ai4scr-data"
 
 [project.optional-dependencies]
+all = [
+    'scikit-image'
+]
 test = [
     "pytest",
     "pytest-cov",

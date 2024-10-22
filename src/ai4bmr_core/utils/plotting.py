@@ -17,3 +17,12 @@ def legend_from_dict(label_to_color: dict):
 
     legend_elements = [Patch(facecolor=color, label=label) for label, color in label_to_color.items()]
     return legend_elements
+
+
+import numpy as np
+
+
+def get_grid_dims(n_samples) -> (int, int):
+    n_row = int(np.ceil(np.sqrt(n_samples)))
+    n_col = n_samples // n_row
+    return n_row, n_col
