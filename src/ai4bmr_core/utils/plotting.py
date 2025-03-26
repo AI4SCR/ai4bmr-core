@@ -3,6 +3,112 @@ import numpy as np
 from matplotlib.colorbar import ColorbarBase
 from matplotlib.colors import Normalize
 
+# image = np.random.randn(5, 10, 10)
+# plt.imshow(image_to_rgba(image)).figure.show()
+
+def normalize_channel(channel, vmin: float = None, vmax: float = None):
+    assert channel.ndim == 2, f'Expected 2D channel, got {channel.ndim}D'
+
+    vmin = vmin or channel.min()
+    vmax = vmax or channel.max()
+
+    if vmin == vmax:
+        return np.zeros_like(channel, dtype=float)
+
+    channel = np.clip(channel, vmin, vmax)
+    return (channel - vmin) / (vmax - vmin)
+
+def normalize_image_channels(image: np.ndarray,
+                             vmins: list[float] = None, vmaxs: list[float] = None
+                             ):
+    assert image.ndim == 3, f'Expected 3D image, got {image.ndim}D'
+
+    vmins = image.min(axis=(1, 2)) if vmins is None else vmins
+    vmaxs = image.max(axis=(1, 2)) if vmaxs is None else vmaxs
+    assert len(vmins) == len(vmaxs) == len(image)
+
+    image = np.stack([
+        normalize_channel(channel, vmin=vmin, vmax=vmax)
+        for channel, vmin, vmax in zip(image, vmins, vmaxs)
+    ])
+
+    return image
+
+def create_colormap(
+        color: str,
+        background: str = 'black',
+        reverse: bool = False,
+):
+    """
+    Create a custom colormap from a color name
+
+    Args:
+        color: Color name or hex
+        reverse: Invert colormap direction
+        alpha: Alpha channel
+
+    Returns:
+        Matplotlib colormap
+    """
+    import matplotlib.colors as mcolors
+
+    # Get RGB values
+    rgb = mcolors.to_rgb(color)
+
+    # Reverse if needed
+    if reverse:
+        rgb = tuple(1 - x for x in rgb)
+
+    # Create colormap
+    bg = mcolors.to_rgb(background)
+    cmap = mcolors.LinearSegmentedColormap.from_list(
+        'custom_cmap',
+        [(0, bg), (1, rgb)],
+        N=256
+    )
+    return cmap
+
+# image = np.ones((3, 3, 3))
+# image[1:, 0, 0] = 0
+# image[0, 1, 1] = 0
+# image[2, 1, 1] = 0
+# image[:2, 2, 2] = 0
+# plt.imshow(image[0], cmap='Blues').figure.show()
+# plt.imshow(image_to_rgba(image, blend='weighted')).figure.show()
+
+import matplotlib.colors as mcolors
+def channel_to_rgba(channel: np.ndarray, cmap: mcolors.LinearSegmentedColormap = None, cmap_name: str = None):
+    cmap = cmap or plt.get_cmap(cmap_name)
+    rgba = cmap(channel)
+    return rgba
+
+def image_to_rgba(image: np.ndarray,
+                  colors: tuple[str] = ('b', 'g', 'r', 'c', 'm', 'y'),
+                  vmins: list[float] = None, vmaxs: list[float] = None,
+                  # cmap: mcolors.LinearSegmentedColormap = None, cmap_name: str = None,
+                  blend: str = 'additive'):
+
+    assert image.ndim == 3, f'Expected 3D image, got {image.ndim}D'
+    assert len(image) <= len(colors), f'Expected at most {len(colors)} channels, got {len(image)}'
+
+    image = normalize_image_channels(image, vmins=vmins, vmaxs=vmaxs)
+    cmaps = [create_colormap(color) for color in colors]
+    rgba = [channel_to_rgba(channel, cmap=cmap) for channel, cmap in zip(image, cmaps)]
+    rgba = np.stack(rgba, axis=-1)
+
+    match blend:
+        case 'additive':
+            rgba = rgba.sum(axis=-1)
+            rgba = rgba.clip(0, 1)
+        case 'weighted':
+            rgba = rgba.mean(axis=-1)
+        case _:
+            raise ValueError(f'Unknown blend mode: {blend}')
+
+    return rgba
+
+
+
 
 def legend_from_dict(label_to_color: dict):
     """Create legend elements from a dictionary mapping labels to colors.
@@ -183,11 +289,6 @@ def add_legends_to_fig(
             elif direction == "vertical":
                 pos_y -= height + pad_y
 
-
-def get_grid_dims(n_samples) -> (int, int):
-    n_row = int(np.ceil(np.sqrt(n_samples)))
-    n_col = n_samples // n_row
-    return n_row, n_col
 
 
 def get_grid_dims(n_samples) -> (int, int):

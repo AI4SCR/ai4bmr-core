@@ -18,7 +18,8 @@ dependencies = [
     "tqdm",
     "networkx",
     "scikit-learn",
-    "matplotlib"
+    "matplotlib",
+    "numpy"
 ]
 dynamic = ["version"]
 classifiers = [
