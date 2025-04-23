@@ -109,6 +109,10 @@ def image_to_rgba(image: np.ndarray,
 
 
 
+def blend(img1, img2, alpha=0.5):
+    return alpha * img1 + (1 - alpha) * img2
+
+
 
 def legend_from_dict(label_to_color: dict):
     """Create legend elements from a dictionary mapping labels to colors.
@@ -293,5 +297,5 @@ def add_legends_to_fig(
 
 def get_grid_dims(n_samples) -> (int, int):
     n_row = int(np.ceil(np.sqrt(n_samples)))
-    n_col = n_samples // n_row
+    n_col = int(np.ceil(n_samples / n_row))
     return n_row, n_col

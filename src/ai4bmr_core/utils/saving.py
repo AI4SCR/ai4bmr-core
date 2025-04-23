@@ -5,7 +5,7 @@ import tifffile
 
 
 def save_mask(mask: np.ndarray, save_path: Path):
-    assert mask.dtype in ["uint32", "uint16"]
+    assert mask.dtype in ["uint32", "uint16", 'int64', 'int32']
 
     if mask.max() < 65536:
         mask = mask.astype("uint16")
