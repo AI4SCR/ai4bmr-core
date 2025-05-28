@@ -79,6 +79,26 @@ def image_to_rgba(image: np.ndarray,
                   vmins: list[float] = None, vmaxs: list[float] = None,
                   # cmap: mcolors.LinearSegmentedColormap = None, cmap_name: str = None,
                   blend: str = 'additive'):
+    """
+    Convert a multi-channel image to an RGBA image using specified colors and blending.
+
+    Args:
+        image (np.ndarray): A 3D NumPy array of shape (C, H, W), where C is the number of channels.
+        colors (tuple[str], optional): A tuple of matplotlib color codes to map each channel. Defaults to ('b', 'g', 'r', 'c', 'm', 'y').
+        vmins (list[float], optional): Minimum values for normalizing each channel. Defaults to None (auto-determined).
+        vmaxs (list[float], optional): Maximum values for normalizing each channel. Defaults to None (auto-determined).
+        blend (str, optional): Blending mode to combine channels into one RGBA image.
+            Options are:
+            - 'additive': Add all RGBA layers and clip the result to [0, 1].
+            - 'weighted': Average the RGBA layers.
+
+    Returns:
+        np.ndarray: A 3D RGBA image of shape (H, W, 4) with values in [0, 1].
+
+    Raises:
+        AssertionError: If the input image is not 3D or if the number of channels exceeds the number of provided colors.
+        ValueError: If an unknown blend mode is specified.
+    """
 
     assert image.ndim == 3, f'Expected 3D image, got {image.ndim}D'
     assert len(image) <= len(colors), f'Expected at most {len(colors)} channels, got {len(image)}'
