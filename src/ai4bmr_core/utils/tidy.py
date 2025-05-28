@@ -32,3 +32,9 @@ def tidy_name(name: str, to_lower: bool = True, split_camel_case: bool = True) -
     name = re.sub(r"_+", "_", name).strip("_")
 
     return name
+
+def relabel_duplicates(data, col_name: str):
+    cumcounts = data.groupby(col_name).cumcount()
+    data.loc[:, col_name] = data[col_name] + "_" + cumcounts.astype(str)
+    data.loc[:, col_name] = data[col_name].str.replace("_0$", "", regex=True)
+    return data
