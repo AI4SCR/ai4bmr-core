@@ -5,8 +5,5 @@ def test_multi_channel_image_to_rgb():
     import matplotlib.pyplot as plt
 
     image = np.random.rand(5, 10, 10)
-
-    # Convert to RGB
     rgb_image = image_to_rgba(image=image)
-
     plt.imshow(rgb_image).figure.show()
