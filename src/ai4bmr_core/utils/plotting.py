@@ -68,13 +68,6 @@ def create_colormap(
     )
     return cmap
 
-# image = np.ones((3, 3, 3))
-# image[1:, 0, 0] = 0
-# image[0, 1, 1] = 0
-# image[2, 1, 1] = 0
-# image[:2, 2, 2] = 0
-# plt.imshow(image[0], cmap='Blues').figure.show()
-# plt.imshow(image_to_rgba(image, blend='weighted')).figure.show()
 
 import matplotlib.colors as mcolors
 def channel_to_rgba(channel: np.ndarray, cmap: mcolors.LinearSegmentedColormap = None, cmap_name: str = None):
@@ -234,8 +227,10 @@ def add_legends_to_fig(
     pad_y = pad_y / (fig.get_figheight() * fig.dpi)
 
     for n, legend in enumerate(legends, start=1):
+
         if legend["type"] == "discrete":
             handles = get_legend_handles_from_dict(legend["label_to_color"])
+
             leg = fig.legend(
                 handles=handles,
                 loc="upper left",  # Position of legend
@@ -248,9 +243,8 @@ def add_legends_to_fig(
                 borderaxespad=0,
                 alignment="left",
                 bbox_transform=fig.transFigure,
-                # todo: this will break if a kwargs is provided twice
-                **legend.get("kwargs", {}),
             )
+
             height, width = get_legend_height_and_width(figure=fig, legend=leg)
 
         elif legend["type"] == "continuous":

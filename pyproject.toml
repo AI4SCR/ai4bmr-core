@@ -28,14 +28,13 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 
-[project.entry-points."console_scripts"]
-
 [project.urls]
 repository = "https://github.com/AI4SCR/ai4scr-data"
 
 [project.optional-dependencies]
 all = [
-    'scikit-image'
+    'scikit-image',
+    'tifffile',
 ]
 test = [
     "pytest",
