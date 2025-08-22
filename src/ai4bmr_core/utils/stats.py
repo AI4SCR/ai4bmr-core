@@ -22,7 +22,7 @@ class StatsRecorder:
 
         if self.exclude_zeros:
             data = data.copy()
-            data[data == 0] = np.isnan
+            data[data == 0] = np.nan
 
         if self.mean is None:
             self.max_height = data.shape[-2]
