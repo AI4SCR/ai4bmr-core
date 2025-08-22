@@ -4,7 +4,7 @@ import numpy as np
 class StatsRecorder:
     """http://notmatthancock.github.io/2017/03/23/simple-batch-stat-updates.html"""
 
-    def __init__(self, data=None):
+    def __init__(self, data=None, exclude_zeros: bool = False):
         self.max_height = None
         self.max_width = None
         self.maxs = None
@@ -12,7 +12,7 @@ class StatsRecorder:
         self.mean = None
         self.std = None
         self.n_observations = 0
-        self.exclude_zeros = False
+        self.exclude_zeros = exclude_zeros
 
         if data is not None:
             self.update(data)
@@ -51,7 +51,8 @@ class StatsRecorder:
 
             self.mean = m / (m + n) * tmp + n / (m + n) * new_mean
             self.std = (
-                m / (m + n) * self.std**2 + n / (m + n) * new_std**2 + m * n / (m + n) ** 2 * (tmp - new_mean) ** 2
+                    m / (m + n) * self.std ** 2 + n / (m + n) * new_std ** 2 + m * n / (m + n) ** 2 * (
+                        tmp - new_mean) ** 2
             )
             self.std = np.sqrt(self.std)
 
